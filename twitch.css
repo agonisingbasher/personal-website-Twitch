@@ -1,0 +1,208 @@
+/* Componentes do hub do canal. Nada aqui redeclara os tokens do portfólio:
+   consome --band-*, cujo padrao e a banda clara. */
+
+/* ---- avatar ---- */
+.ag-avatar {
+  position: relative;
+  display: grid;
+  width: 236px;
+  height: 236px;
+  place-items: center;
+}
+.ag-avatar-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--band-accent) 34%, transparent);
+  border-radius: 50%;
+}
+.ag-avatar-ring.is-inner {
+  inset: 18px;
+  border-color: color-mix(in srgb, var(--band-accent) 18%, transparent);
+}
+.ag-avatar img {
+  position: relative;
+  z-index: 1;
+  width: 168px;
+  height: 168px;
+  border: 3px solid var(--band-bg);
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px var(--band-accent), 0 0 34px color-mix(in srgb, var(--band-accent) 45%, transparent);
+  background: var(--ag-navy-2);
+}
+
+/* ---- badge de status ---- */
+.ag-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 11px;
+  border: 1px solid var(--band-hairline);
+  border-radius: 3px;
+  font: 500 .68rem var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.ag-live-state { display: inline-flex; align-items: center; gap: 8px; }
+.ag-live-state::before {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  content: "";
+  background: var(--band-muted);
+}
+/* Sem atributo (JS morto ou file://) o padrao visivel e OFFLINE. */
+.ag-live-state.is-live, .ag-live-state.is-unknown { display: none; }
+html[data-live-state="live"] .ag-live-state.is-live { display: inline-flex; }
+html[data-live-state="live"] .ag-live-state.is-offline,
+html[data-live-state="unknown"] .ag-live-state.is-offline { display: none; }
+html[data-live-state="unknown"] .ag-live-state.is-unknown { display: inline-flex; }
+
+.ag-live-state.is-live::before { background: var(--ag-neon); box-shadow: 0 0 10px var(--ag-neon); }
+.ag-live-state.is-offline::before { background: var(--band-muted); }
+.ag-live-state.is-unknown::before { background: #b98a3c; }
+
+.ag-live-value { color: var(--band-accent); }
+.ag-live-value:empty { display: none; }
+
+/* So o rotulo "AO VIVO" pulsa; com movimento reduzido ele fica estatico. */
+@media (prefers-reduced-motion: no-preference) {
+  .ag-live-state.is-live { animation: ag-pulse 2.4s ease-in-out infinite; }
+  @keyframes ag-pulse { 50% { opacity: .72; } }
+}
+
+/* ---- fundo da arte offline ---- */
+.ag-offline-backdrop {
+  position: absolute;
+  inset: 0;
+  background: url("assets/channel-offline-1920x1080.jpg") center 38% / cover no-repeat;
+  opacity: .22;
+  pointer-events: none;
+}
+html[data-live-state="live"] .ag-offline-backdrop,
+html[data-live-state="unknown"] .ag-offline-backdrop { display: none; }
+
+/* ---- faixa-banner (a costura entre dark e claro) ---- */
+.ag-banner { margin: 0; padding: 0; }
+.ag-banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1920 / 480;
+  max-height: 340px;
+  object-fit: cover;
+}
+
+/* ---- medidor de meta ---- */
+.ag-meter { display: grid; gap: 13px; }
+.ag-meter-numbers { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 22px; }
+.ag-meter-count { font: 500 clamp(2.4rem, 6vw, 4.2rem)/1 var(--mono); letter-spacing: -.04em; color: var(--green); }
+.ag-meter-of { color: var(--muted); font: 500 .82rem var(--mono); }
+.ag-meter-chip {
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--green);
+  background: #eef5f6;
+  font: 500 .7rem var(--mono);
+  letter-spacing: .05em;
+}
+.ag-meter-track {
+  position: relative;
+  height: 12px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: #eef5f6;
+  overflow: hidden;
+}
+.ag-meter-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform: scaleX(var(--ag-goal-progress, .981));
+  background: linear-gradient(90deg, var(--cyan), var(--green));
+}
+.ag-meter-tick {
+  position: absolute;
+  top: -4px;
+  right: 0;
+  bottom: -4px;
+  width: 2px;
+  background: var(--green);
+}
+.ag-meter-caption { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font: .62rem var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.ag-meter-note { max-width: 640px; margin: 22px 0 0; color: var(--muted); font-size: .78rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .ag-meter-fill { transition: transform .5s ease; }
+}
+
+/* ---- linhas de link ---- */
+.ag-link-handle { color: var(--band-muted); font: .72rem var(--mono); }
+.ag-link-arrow { color: var(--band-accent); }
+.ag-link-note { margin-left: 7px; color: var(--band-muted); font-size: .68rem; }
+.band--navy .social-links a:hover .ag-link-handle { color: var(--band-accent); }
+
+/* ---- botao Seguir: unico lugar onde o roxo da Twitch aparece ---- */
+.button--follow { background: var(--ag-purple); color: #efeff1; }
+.button--follow:hover { background: var(--ag-purple-soft); color: #17102a; }
+.button--ghost { border-color: var(--band-hairline); color: var(--band-fg); }
+.button--ghost:hover { border-color: var(--band-accent); color: var(--band-accent); }
+
+/* ---- metadados da live (aparecem so quando ao vivo) ---- */
+.ag-live-meta { margin: 26px 0 0; display: grid; gap: 4px; }
+.ag-live-meta-row { display: flex; gap: 14px; font: .72rem/2 var(--mono); color: var(--band-muted); }
+.ag-live-meta-row dt { min-width: 92px; letter-spacing: .06em; text-transform: uppercase; }
+.ag-live-meta-row dd { margin: 0; color: var(--band-fg); }
+html:not([data-live-state="live"]) .ag-live-meta { display: none; }
+
+.ag-since { margin: 18px 0 0; color: var(--band-muted); font: .62rem var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+
+/* ---- area de compras (banda clara, mesmo tom do about do portfolio) ---- */
+.buys { background: #e8f0f2; }
+.ag-shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 12px; }
+.ag-shop-tile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 17px 18px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--band-fill);
+  color: var(--ink);
+  font-size: .84rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color .2s ease, transform .2s ease;
+}
+.ag-shop-tile:hover { border-color: #229ac0; transform: translateY(-2px); }
+.ag-shop-tile .ag-link-arrow { color: #247c98; }
+
+.ag-book {
+  display: grid;
+  max-width: 780px;
+  gap: 13px;
+  margin-top: 28px;
+  padding: 27px;
+  border: 1px dashed #c7c9bb;
+  border-radius: 5px;
+  background: var(--band-fill);
+}
+.ag-book h3 { margin: 0; font-size: clamp(1.5rem, 3.4vw, 2.2rem); font-weight: 600; letter-spacing: -.045em; }
+.ag-book-desc { margin: 0; color: #717269; font-size: .86rem; line-height: 1.75; }
+.ag-book .button { justify-self: start; }
+.shop-note { max-width: 660px; margin: 24px 0 0; color: var(--muted); font-size: .78rem; }
+
+@media (max-width: 620px) {
+  /* Com 5 itens no nav, sem isto o flex encolhe os links e quebra o texto
+     dentro do rotulo. Melhor a linha inteira descer. */
+  .main-nav { flex-wrap: wrap; row-gap: 8px; }
+  .main-nav a { white-space: nowrap; }
+  .ag-avatar { width: 190px; height: 190px; }
+  .ag-avatar img { width: 138px; height: 138px; }
+  .ag-live-meta-row { flex-direction: column; gap: 2px; }
+  /* A 1920/480 natural ficaria com ~130px de altura no celular e a arte nao se le.
+     Relacao mais alta recorta as laterais e mantem o banner legivel. */
+  .ag-banner img { aspect-ratio: 1920 / 560; max-height: 220px; }
+}

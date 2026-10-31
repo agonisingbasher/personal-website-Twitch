@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111820">
+  <meta name="description" content="O ambiente do canal AgonisingBasher: status da live, seguidores, links de Twitch, YouTube, Kick, Discord e os projetos de fan games." data-i18n-content="metaDescription">
+  <title>AgonisingBasher — canal, lives e projetos</title>
+  <link rel="icon" type="image/png" sizes="300x300" href="assets/avatar-300x300.png">
+  <link rel="apple-touch-icon" href="assets/avatar-300x300.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="twitch.css">
+  <script src="script.js" defer></script>
+  <script src="live-status.js?v=2026.10.31.1" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#inicio" data-i18n-aria-label="brandAria">
+        <span class="brand-mark" aria-hidden="true">A<span>.</span></span>
+        <span>AGONISING<span class="brand-light">BASHER</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Navegação principal" data-i18n-aria-label="navLabel">
+        <a href="#meta" data-i18n="navGoal">Seguidores</a>
+        <a href="#compras" data-i18n="navShop">Compras</a>
+        <a href="#portfolio" data-i18n="navPortfolio">Projetos</a>
+        <a class="nav-contact" href="#conectar"><span data-i18n="navConnect">Onde me achar</span> <span aria-hidden="true">↓</span></a>
+        <button class="language-toggle" type="button" data-lang-toggle aria-label="Switch to English" title="Switch to English">EN</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero band--dark" id="inicio">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="ag-offline-backdrop" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="status-dot"></span> <span data-i18n="heroEyebrow">Canal de lives · converse no chat</span></p>
+          <h1 data-i18n="heroTitle">Cola na live.<br><span>A diversão é garantida.</span></h1>
+          <p class="hero-description" data-i18n="heroDescription">Opa, sou streamer, gosto muito de conversar com o chat, sou da zuera, fácil de dar risada, além de jogar variados jogos.</p>
+          <div class="hero-actions">
+            <a class="button button--follow" href="https://www.twitch.tv/agonisingbasher" target="_blank" rel="noreferrer" data-i18n="heroFollow" data-i18n-aria-label="heroFollowAria">Seguir na Twitch</a>
+            <a class="button button--ghost" href="#portfolio" data-i18n="heroProjects">Ver os projetos</a>
+          </div>
+          <dl class="ag-live-meta">
+            <div class="ag-live-meta-row">
+              <dt data-i18n="liveNowTitle">Título da live</dt>
+              <dd id="live-title"></dd>
+            </div>
+            <div class="ag-live-meta-row">
+              <dt data-i18n="liveNowPlaying">Jogando</dt>
+              <dd id="live-game"></dd>
+            </div>
+          </dl>
+          <p class="ag-live-badge" id="live-badge">
+            <span class="ag-live-state is-live" data-i18n="liveStateLive">AO VIVO</span>
+            <span class="ag-live-state is-offline" data-i18n="liveStateOffline">OFFLINE</span>
+            <span class="ag-live-state is-unknown" data-i18n="liveStateUnknown">Status indisponível</span>
+            <span class="ag-live-value" id="live-value"></span>
+          </p>
+          <p class="ag-since" data-i18n="heroChannelSince">No ar desde março de 2020</p>
+        </div>
+        <div class="hero-art">
+          <div class="ag-avatar">
+            <span class="ag-avatar-ring" aria-hidden="true"></span>
+            <span class="ag-avatar-ring is-inner" aria-hidden="true"></span>
+            <img src="assets/avatar-300x300.png" width="300" height="300" alt="Ícone do canal AgonisingBasher" data-i18n-alt="heroAvatarAlt">
+          </div>
+        </div>
+      </div>
+      <div class="container hero-bottom">
+        <span data-i18n="heroFooter">UM CANTO DO CANAL FEITO POR MIM</span>
+        <a href="#meta"><span data-i18n="heroScroll">ROLE PARA DESCOBRIR</span> <span aria-hidden="true">↓</span></a>
+      </div>
+    </section>
+
+    <section class="ag-banner band--dark" aria-label="AgonisingBasher">
+      <img src="assets/profile-banner-480.jpeg" width="1920" height="480" alt="Arte do banner do canal AgonisingBasher" data-i18n-alt="bannerAlt" loading="eager" fetchpriority="high">
+    </section>
+
+    <!-- Sem grade de streams por decisao do canal: nao ha agenda fixa, e placeholder seria dado inventado. -->
+    <section class="goal section-pad" id="meta" data-goal="4800">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="goalEyebrow">01 / META DO CANAL</p>
+            <h2 data-i18n="goalTitle">Faltam poucos<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="goalIntro">A meta é a que o próprio canal exibe no painel de seguidores.</p>
+        </div>
+        <div class="ag-meter">
+          <div class="ag-meter-numbers">
+            <span class="ag-meter-count" id="goal-current">4709</span>
+            <span class="ag-meter-of"><span data-i18n="goalCurrentLabel">Seguidores</span> · <span data-i18n="goalTargetLabel">Meta</span> <span id="goal-target">4800</span></span>
+            <span class="ag-meter-chip" id="goal-remaining" data-i18n="goalRemaining">faltam 91 seguidores</span>
+          </div>
+          <div class="ag-meter-track" role="img" aria-label="Progresso rumo à meta de seguidores do canal" data-i18n-aria-label="goalProgressAria">
+            <span class="ag-meter-fill" id="goal-fill" style="--ag-goal-progress: .981"></span>
+            <span class="ag-meter-tick" aria-hidden="true"></span>
+          </div>
+          <div class="ag-meter-caption">
+            <span id="goal-caption">4709 / 4800</span>
+            <span id="goal-percent">98,1%</span>
+          </div>
+        </div>
+        <p class="ag-meter-note" data-i18n="goalSourceNote">Números lidos do próprio canal; quando o status fica indisponível, mostramos o último valor válido.</p>
+      </div>
+    </section>
+
+    <section class="connect band--navy section-pad" id="conectar">
+      <div class="container connect-inner">
+        <p class="eyebrow" data-i18n="linksEyebrow">02 / ONDE ME ACHAR</p>
+        <h2 data-i18n="linksTitle">Um canal,<br>várias portas<span>.</span></h2>
+        <p class="connect-copy" data-i18n="linksIntro">Tudo leva para fora: aqui é só a entrada. Escolhe a plataforma.</p>
+        <div class="social-links">
+          <a href="https://www.twitch.tv/agonisingbasher" target="_blank" rel="noreferrer"><span data-i18n="linkTwitch">Twitch</span><span><span class="ag-link-handle">agonisingbasher</span> <span class="ag-link-arrow" aria-hidden="true">↗</span></span></a>
+          <a href="https://www.youtube.com/@AgonisingBasher" target="_blank" rel="noreferrer"><span data-i18n="linkYouTube">YouTube</span><span><span class="ag-link-handle">@AgonisingBasher</span> <span class="ag-link-arrow" aria-hidden="true">↗</span></span></a>
+          <a href="https://kick.com/agonisingbasher" target="_blank" rel="noreferrer"><span data-i18n="linkKick">Kick</span><span><span class="ag-link-handle">agonisingbasher</span> <span class="ag-link-arrow" aria-hidden="true">↗</span></span></a>
+          <a href="https://www.instagram.com/felipealexandre10/" target="_blank" rel="noreferrer"><span data-i18n="linkInstagram">Instagram</span><span><span class="ag-link-handle">@felipealexandre10</span> <span class="ag-link-arrow" aria-hidden="true">↗</span></span></a>
+          <a href="https://discord.gg/RmQVzpkuG5" target="_blank" rel="noreferrer"><span data-i18n="linkDiscord">Discord</span><span><span class="ag-link-handle">Recanto do Agn</span> <span class="ag-link-arrow" aria-hidden="true">↗</span></span></a>
+          <a href="https://livepix.gg/agonisingbasher" target="_blank" rel="noreferrer"><span data-i18n="linkPix">LivePix (Pix)</span><span><span class="ag-link-handle">agonisingbasher</span><span class="ag-link-note" data-i18n="linkPixHint">apoio ao canal</span> <span class="ag-link-arrow" aria-hidden="true">↗</span></span></a>
+        </div>
+        <p class="feedback-invite"><span data-i18n="feedbackInvite">Encontrou um bug ou tem uma sugestão?</span> <a href="feedback.html?categoria=Site%20do%20canal" data-lang-link data-i18n="feedbackInviteLink">Envie feedback ↗</a></p>
+      </div>
+    </section>
+
+    <section class="buys section-pad" id="compras">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="shopEyebrow">03 / ÁREA DE COMPRAS</p>
+            <h2 data-i18n="shopTitle">Equipamento<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="shopIntro">Categorias que eu separo por aqui. Tudo abre fora do site.</p>
+        </div>
+        <div class="ag-shop-grid">
+          <a class="ag-shop-tile" href="https://s.shopee.com.br/3g4sMVp3to" target="_blank" rel="noreferrer sponsored"><span data-i18n="shopFones">Fones</span><span class="ag-link-arrow" aria-hidden="true">↗</span></a>
+          <a class="ag-shop-tile" href="https://s.shopee.com.br/3qOIYooQYr" target="_blank" rel="noreferrer sponsored"><span data-i18n="shopElectronics">Acessórios para Eletrônicos</span><span class="ag-link-arrow" aria-hidden="true">↗</span></a>
+          <a class="ag-shop-tile" href="https://s.shopee.com.br/3LS1xtqKZm" target="_blank" rel="noreferrer sponsored"><span data-i18n="shopCameras">Câmeras e Drones</span><span class="ag-link-arrow" aria-hidden="true">↗</span></a>
+          <a class="ag-shop-tile" href="https://s.shopee.com.br/3VlSACphEp" target="_blank" rel="noreferrer sponsored"><span data-i18n="shopComputer">Acessórios para Computador</span><span class="ag-link-arrow" aria-hidden="true">↗</span></a>
+          <a class="ag-shop-tile" href="https://s.shopee.com.br/30pBZHrbFk" target="_blank" rel="noreferrer sponsored"><span data-i18n="shopMobile">Mobile Geral</span><span class="ag-link-arrow" aria-hidden="true">↗</span></a>
+        </div>
+
+        <article class="ag-book">
+          <p class="eyebrow eyebrow-dark" data-i18n="bookEyebrow">E-BOOK DO CANAL</p>
+          <h3 data-i18n="bookTitle">Dominando a IA</h3>
+          <p class="ag-book-desc" data-i18n="bookDescription">Descubra como usar a Inteligência Artificial como um Orquestrador! Neste e-book, Felipe Alexandre ensina a “Fórmula de Ouro” (Papel, Contexto, Tarefa e Formato) para gerar resultados de alta performance. Economize dezenas de horas de trabalho usando a IA para resumir textos, planejar roteiros, redigir e-mails, destravar a criatividade e programar. Saia do nível amador e transforme a tecnologia em um assistente virtual de elite que trabalha 24h por dia para você.</p>
+          <a class="button button-primary" href="https://pay.kiwify.com.br/2FCVOIi" target="_blank" rel="noreferrer" data-i18n="bookBuy">Comprar o e-book</a>
+        </article>
+
+        <p class="shop-note" data-i18n="shopNote">Os links da Shopee abrem categorias na loja e carregam a identificação de parceria do canal. Preço e estoque são os que a Shopee mostrar.</p>
+      </div>
+    </section>
+
+    <section class="projects section-pad" id="portfolio">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="portfolioEyebrow">04 / FORA DAS LIVES</p>
+            <h2 data-i18n="portfolioTitle">Também escrevo código<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="portfolioIntro">Além das lives, eu recrio e adapto jogos para consoles Nintendo. Fan games, ports e — no futuro — jogos meus.</p>
+        </div>
+        <div class="tag-list">
+          <span data-i18n="portfolioFanGames">Fan games</span>
+          <span data-i18n="portfolioPorts">Ports para Nintendo DSi e Wii U</span>
+          <span data-i18n="portfolioOwnGames">Jogos próprios, ainda em ideias</span>
+        </div>
+        <a class="next-project" href="https://agonisingbasher.github.io/personal-website/" data-lang-link>
+          <span class="next-icon" aria-hidden="true">↗</span>
+          <strong data-i18n="portfolioCta">Ver o portfólio</strong>
+          <span class="next-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer band--dark">
+    <div class="container footer-inner">
+      <a class="brand footer-brand" href="#inicio"><span class="brand-mark" aria-hidden="true">A<span>.</span></span><span>AGONISING<span class="brand-light">BASHER</span></span></a>
+      <span data-i18n="footerCredit">FEITO COM CURIOSIDADE, POR AGONISINGBASHER.</span>
+      <a class="footer-feedback" href="feedback.html?categoria=Site%20do%20canal" data-lang-link data-i18n="feedbackLink">FEEDBACK / BUGS ↗</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111820">
+  <meta name="description" content="Envie feedback, sugestões ou relatos de bugs do site do canal AgonisingBasher." data-i18n-content="feedbackMetaDescription">
+  <title>Feedback e bugs | AgonisingBasher</title>
+  <link rel="icon" type="image/png" sizes="300x300" href="assets/avatar-300x300.png">
+  <link rel="apple-touch-icon" href="assets/avatar-300x300.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="twitch.css">
+  <link rel="stylesheet" href="feedback.css">
+  <script src="script.js" defer></script>
+  <script src="feedback-form.js?v=2026.10.31.1" defer></script>
+</head>
+<body class="feedback-page">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" data-lang-link aria-label="AgonisingBasher, início" data-i18n-aria-label="brandAria">
+        <span class="brand-mark" aria-hidden="true">A<span>.</span></span>
+        <span>AGONISING<span class="brand-light">BASHER</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Navegação principal" data-i18n-aria-label="navLabel">
+        <a href="index.html#meta" data-lang-link data-i18n="navGoal">Seguidores</a>
+        <a href="index.html#compras" data-lang-link data-i18n="navShop">Compras</a>
+        <a href="index.html#portfolio" data-lang-link data-i18n="navPortfolio">Projetos</a>
+        <a class="nav-contact" href="index.html#conectar" data-lang-link><span data-i18n="navConnect">Onde me achar</span> <span aria-hidden="true">↗</span></a>
+        <button class="language-toggle" type="button" data-lang-toggle aria-label="Switch to English" title="Switch to English">EN</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="feedback-hero">
+      <div class="container">
+        <p class="eyebrow"><span class="status-dot"></span> <span data-i18n="feedbackEyebrow">FEEDBACK DIRETO</span></p>
+        <h1 data-i18n="feedbackHeading">Ideias e bugs.<br><span>Manda ver.</span></h1>
+        <p class="hero-description" data-i18n="feedbackIntro">Encontrou algo quebrado ou tem uma sugestão? Conte o que aconteceu, anexe capturas ou um vídeo curto e envie direto para mim.</p>
+        <a class="feedback-back" href="index.html" data-lang-link data-i18n="feedbackBack">← Voltar ao site</a>
+      </div>
+    </section>
+
+    <section class="feedback-body">
+      <div class="container feedback-grid">
+        <aside class="feedback-aside">
+          <p class="feedback-category"><span data-i18n="feedbackCategoryLabel">Categoria</span><strong id="feedback-category-value">Site do canal</strong></p>
+          <h2 data-i18n="feedbackAsideTitle">Um relato útil.</h2>
+          <p data-i18n="feedbackAsideText">Diga onde aconteceu, o que você esperava e como reproduzir. Capturas e um vídeo curto ajudam bastante.</p>
+          <p class="feedback-aside-note" data-i18n="feedbackAsideNote">Não envie senhas, dados pessoais sensíveis ou arquivos privados.</p>
+        </aside>
+
+        <form id="feedback-form" class="feedback-form" method="post" enctype="multipart/form-data" action="#">
+          <h2 data-i18n="feedbackFormTitle">Envie sua mensagem</h2>
+          <input type="hidden" name="category" id="feedback-category" value="Site do canal">
+          <input type="hidden" name="language" id="feedback-language" value="Português (Brasil)">
+          <div class="feedback-honeypot" aria-hidden="true">
+            <label for="feedback-website">Website</label>
+            <input id="feedback-website" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <label for="feedback-name" data-i18n="feedbackNameLabel">Nome *</label>
+          <input id="feedback-name" name="name" type="text" autocomplete="name" maxlength="120" required>
+
+          <label for="feedback-email" data-i18n="feedbackEmailLabel">Contato (email) *</label>
+          <input id="feedback-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+
+          <label for="feedback-title" data-i18n="feedbackTitleLabel">Título *</label>
+          <input id="feedback-title" name="title" type="text" maxlength="160" required>
+
+          <label for="feedback-description" data-i18n="feedbackDescriptionLabel">Descrição *</label>
+          <textarea id="feedback-description" name="description" rows="7" maxlength="10000" required></textarea>
+
+          <label for="feedback-images" data-i18n="feedbackImagesLabel">Imagens (até 5)</label>
+          <input id="feedback-images" name="attachments[]" type="file" accept="image/*" multiple aria-describedby="feedback-images-hint">
+          <small class="feedback-hint" id="feedback-images-hint" data-i18n="feedbackImagesHint">Até 5 imagens. Fotos grandes são reduzidas antes do envio.</small>
+
+          <label for="feedback-video" data-i18n="feedbackVideoLabel">Vídeo (até 1)</label>
+          <input id="feedback-video" name="attachments[]" type="file" accept="video/*" aria-describedby="feedback-video-hint">
+          <small class="feedback-hint" id="feedback-video-hint" data-i18n="feedbackVideoHint">Um vídeo de até 20 MB.</small>
+
+          <progress class="feedback-progress" id="feedback-progress" max="100" value="0" hidden></progress>
+          <p id="feedback-status" class="feedback-status" role="status" aria-live="polite" data-state="info">Preencha os campos e envie quando estiver pronto.</p>
+          <button class="feedback-submit" type="submit" data-i18n="feedbackSubmit">Enviar feedback</button>
+          <p class="feedback-privacy" data-i18n="feedbackPrivacy">O envio usa um serviço externo de formulários e é encaminhado por e-mail ao desenvolvedor. Não envie senhas, dados pessoais sensíveis ou arquivos privados.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <a class="brand footer-brand" href="index.html" data-lang-link><span class="brand-mark" aria-hidden="true">A<span>.</span></span><span>AGONISING<span class="brand-light">BASHER</span></span></a>
+      <span data-i18n="footerCredit">FEITO COM CURIOSIDADE, POR AGONISINGBASHER.</span>
+      <a class="footer-feedback" href="index.html" data-lang-link data-i18n="backToTop">VOLTAR AO TOPO ↑</a>
+    </div>
+  </footer>
+</body>
+</html>
