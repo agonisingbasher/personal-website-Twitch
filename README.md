@@ -29,12 +29,24 @@ Sem build, sem dependências, sem passo de instalação. São arquivos planos.
 
 | Endpoint | O que traz | Quando é chamado |
 |---|---|---|
-| `/twitch/uptime/agonisingbasher` | estado do canal (e a duração, se ao vivo) | a cada 5 min, e de carona os endpoints de título/jogo **só quando ao vivo** |
+| `/twitch/uptime/agonisingbasher` | estado do canal (e a duração, se ao vivo) | a cada 5 min |
+| `/twitch/title/agonisingbasher` | título da stream | no ciclo do uptime, **só quando ao vivo** |
+| `/twitch/game/agonisingbasher` | categoria/jogo | idem |
+| `/twitch/viewercount/agonisingbasher` | espectadores simultâneos | idem |
 | `/twitch/followcount/agonisingbasher` | contagem de seguidores | a cada 30 min |
 
-Canal offline ≈ 14 requisições/hora; ao vivo ≈ 38. O throttle mora em `sessionStorage`, então
-recarregar a página dez vezes em um minuto **não** emite requisição nova enquanto o cache tiver
-menos de 60 s.
+Cada ciclo emite 1 requisição offline e 4 ao vivo. Em uma hora de página aberta isso dá
+**≈14/h offline** e **≈50/h ao vivo**, mais as 2/h da contagem de seguidores. O throttle mora em
+`sessionStorage`, então recarregar a página dez vezes em um minuto **não** emite requisição nova
+enquanto o cache tiver menos de 60 s.
+
+A arte de fundo do estado AO VIVO não vem desses endpoints: é o preview público da Twitch,
+`https://static-cdn.jtvnw.net/previews-ttv/live_user_agonisingbasher-640x360.jpg`, montado a partir
+de uma constante do arquivo. Texto remoto nunca entra nessa URL, então não há o que injetar ali.
+
+O `<script>` é servido com carimbo (`live-status.js?v=2026.10.31.3`). **Mexeu no `live-status.js`,
+suba o carimbo no `index.html`** — o Pages cacheia o arquivo pelo nome, e sem isso cada visitante
+fica com a versão antiga por tempo indeterminado.
 
 Regras que o código segue e que valem para qualquer edição futura:
 
@@ -44,12 +56,48 @@ Regras que o código segue e que valem para qualquer edição futura:
 - **Título e jogo de uma stream antiga não são publicados.** Offline, eles ficam vazios. Um
   título velho num site que diz OFFLINE implicaria uma sessão que não existe.
 - **Texto remoto entra por `textContent`.** O título da stream é controlado por terceiros.
+- **Número que não é número não pinta.** `viewercount` e `followcount` só são aceitos se a resposta
+  inteira for dígitos (`^\d+$`) e o valor couber em `≤ 500000`; `N/A`, `12.5`, `-5` e
+  `User not found: xyz` deixam o campo vazio ou mantêm o último valor válido.
+- **Ir para offline limpa a duração.** O chip `#live-value` só se esconde quando está vazio, então
+  `clearLiveMeta()` zera título, jogo, viewers, a própria duração e o `--ag-live-shot`. Sem isso o
+  badge leria `OFFLINE 3h 4m 12s`.
 - **Nenhum elemento é i18n-owned e poll-owned ao mesmo tempo.** Os três rótulos do badge
   (`AO VIVO` / `OFFLINE` / `Status indisponível`) têm `data-i18n` e são trocados por CSS conforme
   `html[data-live-state]`; o valor medido vive num span separado. `setLanguage()` não amassa
   número nenhum.
 - O badge **não** é `aria-live`: polling de 5 min dentro de uma live region leria o número em voz
   alta a cada ciclo. O único `aria-live` do site é o status do formulário.
+
+## OFFLINE e AO VIVO
+
+Nada no hero se move quando o canal entra no ar. As três regras que garantem isso:
+
+- **O slot de título/jogo/viewers é reservado.** O `<dl>` fica no fluxo com
+  `visibility: hidden; opacity: 0` (twitch.css:224). `display: none` faria o hero crescer ~90 px no
+  instante em que a live começasse. Cada `dd` é de linha única com `text-overflow: ellipsis`,
+  então a altura do slot é a mesma nos dois estados e em qualquer largura — sem número mágico.
+  Medido alternando `html[data-live-state]` em 320/392/480/620/768/831 px, inclusive com 120
+  caracteres dentro dos `dd`: **Δ hero, Δ copy, Δ botões e Δ rodapé = 0 em todos**.
+- **Os dois rótulos do botão moram no markup**, cada um com seu `data-i18n`; o estado só escolhe
+  qual aparece (grid sobreposto, `grid-area: 1 / 1`), por isso a largura do botão é a mesma nos dois
+  estados e o nó nunca fica i18n-owned *e* poll-owned ao mesmo tempo.
+- **Quem some é o `visibility`, nunca o layout.** A transição do rótulo é
+  `opacity .4s ease, visibility .4s` e a do slot `opacity .6s .25s, visibility .85s`, ambas dentro
+  de `prefers-reduced-motion: no-preference`.
+
+O badge AO VIVO é uma pílula vermelha sólida (`#c70e27`, mixes de `--ag-live-red`) com rótulo
+`#fff1f2`: **5,42:1**. Vermelho saturado como *texto* de 11 px sobre o fundo escuro media 3,25:1 e
+reprovava AA, e a pulsação antiga por opacidade levava esse par a 2,14:1 no vale da animação
+(composto à mão a partir do `.72` do keyframe) — agora o que pulsa é um halo (`box-shadow`), e a
+opacidade do rótulo fica 1.
+
+Os fundos (`twitch.css:96-130`) usam **scrim dentro de `background-image`**, não `opacity` do
+elemento: a arte do canal é clara (luminância média 0,67, pico 0,97) e uma opacidade baixa deixava a
+copy sobre pixels claros. A legibilidade foi medida nó a nó — a rect de cada texto mapeada pela
+geometria real `cover / center 38%`, composta sobre `#111820`, com `blur(15px)` simulado no fundo da
+live e o **pior pixel** dentro da caixa de cada rótulo: 26 nós, mínimo **4,72:1 offline** e
+**4,55:1 ao vivo**, todos acima do AA de 4,5:1 (3:1 para os dois títulos grandes).
 
 ## Feedback
 
@@ -88,7 +136,7 @@ capricho: do contrário o idioma de um vazaria para o outro.
 
 A paleta foi medida por amostragem de pixels das artes do canal, não escolhida de memória:
 ciano neon `#23DBF3` / `#1BEBFB` sobre navy `#1B2333`. O roxo da Twitch (`#9147FF`) aparece em
-**um único lugar** — o botão Seguir, em `twitch.css:146` — e nunca em texto nem em banda clara.
+**um único lugar** — o botão Seguir, em `twitch.css:203` — e nunca em texto nem em banda clara.
 
 As seções alternam dark e claro através de apelidos de papel (`--band-bg`, `--band-fg`,
 `--band-accent`…) definidos em `style.css`. **O padrão é a banda clara**, então uma seção sem
@@ -97,6 +145,17 @@ sem edição. Os 9 tokens originais estão congelados; adicione nomes novos, nã
 
 Breakpoints: `800/620/370` para o hub e `850/600` para o `feedback.css`. **Não unifique** — as
 regras nunca se aplicam na mesma página, e a diferença é dívida deliberada.
+
+## Meu Setup
+
+Dois colunas (`twitch.css:270`), 16 linhas no total: **Configuração do PC** (10 itens) e
+**Periféricos** (6), com um link de volta para a área de compras. O texto de cada valor é
+**cópia exata do que o dono do canal escreveu** — nada de parafrasear, nada de especificação
+inventada, nada de "melhorar" o nome comercial. Se um item mudar, troca-se a linha; se ele não
+fornecer o dado, o item não entra.
+
+Os rótulos (`Processador`, `Placa de vídeo`, `Mouse`…) vêm do dicionário i18n; os valores são
+markup fixo, sem polling — máquina não muda sozinha no ar.
 
 ## Refazer o download das artes
 
@@ -113,15 +172,22 @@ curl -o channel-offline-1920x1080.jpg   "<URL nova da arte offline>"
 
 300×300 é o maior avatar que a Twitch serve (500×500 e `.jpeg` retornam 404). A arte offline é
 JPEG de verdade mesmo quando a URL termina em `.png` — daí o sufixo `.jpg` aqui, para o GitHub
-Pages mandar o MIME correto. Ela não é enfeite: `live-status.js` põe `data-live-state` em
-`<html>` e o CSS a usa como fundo a 22% de opacidade enquanto você está offline.
+Pages mandar o MIME correto. Ela não é enfeite: `live-status.js` põe `data-live-state` em `<html>`
+e o CSS a usa como fundo do hero sob um scrim vertical `#111820` (opacidade 0,88-0,97), trocando de
+opacidade com o preview da live quando o canal entra no ar.
 
 ## O que está fora de propósito
 
-Para alguém não "ajudar" depois: grade de streams, player embutido, Setup e regras do chat (v2),
+Para alguém não "ajudar" depois: grade de streams, player embutido e regras do chat (v2),
 e qualquer número de visualizações. **Views totais e contagem de VODs não existem na API
 pública** — hoje o canal tem 0 VODs públicos — então nenhum dos dois pode aparecer como número
 em lugar nenhum. Há um comentário no HTML marcando onde a grade entraria.
+
+Também não volte a colocar a nav em `position: absolute` no celular: com 5 itens + toggle a linha
+quebra em até 3 linhas (medido: 335 px de itens dentro de 277 px de container aos 320 px) e o header
+sobreposto encostava no primeiro par do hero, com clearance de **-9 px**. Abaixo de 620 px ele entra
+no fluxo (`twitch.css:316-318`) e o hero para de reservar altura — é por isso que não há número de
+padding amarrado ao número de linhas da nav.
 
 ## Publicar
 

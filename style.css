@@ -23,6 +23,8 @@
   --ag-offline-paper: #E3E3DB;
   --ag-purple: #9147FF;
   --ag-purple-soft: #BF94FF;
+  /* Vermelho de "ao vivo" da propria Twitch; unico uso: o badge do hero. */
+  --ag-live-red: #EB102E;
 
   /* Apelidos de banda. Os padroes SAO os valores claros, entao qualquer
      secao sem classe de banda renderiza identica ao original. */

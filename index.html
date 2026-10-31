@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="twitch.css">
   <script src="script.js" defer></script>
-  <script src="live-status.js?v=2026.10.31.1" defer></script>
+  <script src="live-status.js?v=2026.10.31.3" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -23,6 +23,7 @@
       <nav class="main-nav" aria-label="Navegação principal" data-i18n-aria-label="navLabel">
         <a href="#meta" data-i18n="navGoal">Seguidores</a>
         <a href="#compras" data-i18n="navShop">Compras</a>
+        <a href="#setup" data-i18n="navSetup">Setup</a>
         <a href="#portfolio" data-i18n="navPortfolio">Projetos</a>
         <a class="nav-contact" href="#conectar"><span data-i18n="navConnect">Onde me achar</span> <span aria-hidden="true">↓</span></a>
         <button class="language-toggle" type="button" data-lang-toggle aria-label="Switch to English" title="Switch to English">EN</button>
@@ -34,15 +35,25 @@
     <section class="hero band--dark" id="inicio">
       <div class="hero-grid" aria-hidden="true"></div>
       <div class="ag-offline-backdrop" aria-hidden="true"></div>
+      <div class="ag-live-backdrop" aria-hidden="true"></div>
       <div class="container hero-inner">
         <div class="hero-copy">
           <p class="eyebrow"><span class="status-dot"></span> <span data-i18n="heroEyebrow">Canal de lives · converse no chat</span></p>
           <h1 data-i18n="heroTitle">Cola na live.<br><span>A diversão é garantida.</span></h1>
           <p class="hero-description" data-i18n="heroDescription">Opa, sou streamer, gosto muito de conversar com o chat, sou da zuera, fácil de dar risada, além de jogar variados jogos.</p>
           <div class="hero-actions">
-            <a class="button button--follow" href="https://www.twitch.tv/agonisingbasher" target="_blank" rel="noreferrer" data-i18n="heroFollow" data-i18n-aria-label="heroFollowAria">Seguir na Twitch</a>
+            <a class="button button--follow" href="https://www.twitch.tv/agonisingbasher" target="_blank" rel="noreferrer">
+              <span class="button--label-follow" data-i18n="heroFollow">Seguir na Twitch</span>
+              <span class="button--label-live" data-i18n="heroWatch">Assistir agora</span>
+            </a>
             <a class="button button--ghost" href="#portfolio" data-i18n="heroProjects">Ver os projetos</a>
           </div>
+          <p class="ag-live-badge" id="live-badge">
+            <span class="ag-live-state is-live" data-i18n="liveStateLive">AO VIVO</span>
+            <span class="ag-live-state is-offline" data-i18n="liveStateOffline">OFFLINE</span>
+            <span class="ag-live-state is-unknown" data-i18n="liveStateUnknown">Status indisponível</span>
+            <span class="ag-live-value" id="live-value"></span>
+          </p>
           <dl class="ag-live-meta">
             <div class="ag-live-meta-row">
               <dt data-i18n="liveNowTitle">Título da live</dt>
@@ -52,13 +63,11 @@
               <dt data-i18n="liveNowPlaying">Jogando</dt>
               <dd id="live-game"></dd>
             </div>
+            <div class="ag-live-meta-row">
+              <dt data-i18n="liveViewers">Assistindo agora</dt>
+              <dd id="live-viewers"></dd>
+            </div>
           </dl>
-          <p class="ag-live-badge" id="live-badge">
-            <span class="ag-live-state is-live" data-i18n="liveStateLive">AO VIVO</span>
-            <span class="ag-live-state is-offline" data-i18n="liveStateOffline">OFFLINE</span>
-            <span class="ag-live-state is-unknown" data-i18n="liveStateUnknown">Status indisponível</span>
-            <span class="ag-live-value" id="live-value"></span>
-          </p>
           <p class="ag-since" data-i18n="heroChannelSince">No ar desde março de 2020</p>
         </div>
         <div class="hero-art">
@@ -153,11 +162,52 @@
       </div>
     </section>
 
+    <section class="setup section-pad" id="setup">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="setupEyebrow">04 / MEU SETUP</p>
+            <h2 data-i18n="setupTitle">O que tem na minha mesa<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="setupIntro">A máquina e os periféricos que aparecem nas lives. Os links de compra ficam na área de compras aqui em cima.</p>
+        </div>
+        <div class="ag-setup-grid">
+          <div class="ag-setup-col">
+            <h3 data-i18n="setupPcTitle">Configuração do PC</h3>
+            <dl class="ag-setup-specs">
+              <div><dt data-i18n="setupCpu">Processador</dt><dd>Ryzen 5 3600</dd></div>
+              <div><dt data-i18n="setupCooler">Water cooler</dt><dd>Gamemax Ice Chill 240</dd></div>
+              <div><dt data-i18n="setupBoard">Placa-mãe</dt><dd>ROG Strix B550-F Gaming</dd></div>
+              <div><dt data-i18n="setupFans">Fans</dt><dd>Gamemax RB-300 (4)</dd></div>
+              <div><dt data-i18n="setupRam">Memória</dt><dd>XPG Spectrix D60G 8GB (4)</dd></div>
+              <div><dt data-i18n="setupGpu">Placa de vídeo</dt><dd>RX 6600 XT 8GB / GTX 960 2GB</dd></div>
+              <div><dt data-i18n="setupStorage">Armazenamento</dt><dd>HD 1,5TB + SSD 250GB + NVMe 1TB</dd></div>
+              <div><dt data-i18n="setupPsu">Fonte</dt><dd>Cobra 800W</dd></div>
+              <div><dt data-i18n="setupMonitorMain">Monitor principal</dt><dd>Samsung G40 240Hz</dd></div>
+              <div><dt data-i18n="setupMonitorSecond">Monitor secundário</dt><dd>LG 22MK400H 75Hz</dd></div>
+            </dl>
+          </div>
+          <div class="ag-setup-col">
+            <h3 data-i18n="setupGearTitle">Periféricos</h3>
+            <dl class="ag-setup-specs">
+              <div><dt data-i18n="setupMouse">Mouse</dt><dd>Razer Deathadder Essential</dd></div>
+              <div><dt data-i18n="setupKeyboard">Teclado</dt><dd>Redragon Kurama</dd></div>
+              <div><dt data-i18n="setupMousepad">Mousepad</dt><dd>Asus ROG Strix</dd></div>
+              <div><dt data-i18n="setupHeadset">Headset</dt><dd>ROG Strix F300</dd></div>
+              <div><dt data-i18n="setupHeadphones">Fone</dt><dd>F6</dd></div>
+              <div><dt data-i18n="setupWebcam">Webcam</dt><dd>Rise Mode Vision 2K</dd></div>
+            </dl>
+            <a class="ag-setup-link" href="#compras"><span data-i18n="setupShopLink">Ver as categorias de compras</span> <span aria-hidden="true">↑</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="projects section-pad" id="portfolio">
       <div class="container">
         <div class="section-heading">
           <div>
-            <p class="eyebrow eyebrow-dark" data-i18n="portfolioEyebrow">04 / FORA DAS LIVES</p>
+            <p class="eyebrow eyebrow-dark" data-i18n="portfolioEyebrow">05 / FORA DAS LIVES</p>
             <h2 data-i18n="portfolioTitle">Também escrevo código<span class="heading-period">.</span></h2>
           </div>
           <p class="section-intro" data-i18n="portfolioIntro">Além das lives, eu recrio e adapto jogos para consoles Nintendo. Fan games, ports e — no futuro — jogos meus.</p>

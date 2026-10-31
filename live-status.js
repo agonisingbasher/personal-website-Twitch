@@ -3,6 +3,9 @@
 const LIVE_CHANNEL = "agonisingbasher";
 const LIVE_BASE = "https://decapi.me/twitch/";
 const LIVE_CACHE_KEY = "agonisingbasher-twitch-live";
+// URL fixa do preview da Twitch, montada a partir de uma constante nossa: o texto remoto
+// nunca entra aqui, entao o --ag-live-shot nao tem superficie de injecao.
+const LIVE_SHOT_URL = `https://static-cdn.jtvnw.net/previews-ttv/live_user_${LIVE_CHANNEL}-640x360.jpg`;
 const UPTIME_EVERY = 5 * 60 * 1000;
 const COUNT_EVERY = 30 * 60 * 1000;
 const MIN_GAP = 60 * 1000;
@@ -13,6 +16,7 @@ const liveStateAttr = document.documentElement;
 const badgeValue = document.getElementById("live-value");
 const liveTitle = document.getElementById("live-title");
 const liveGame = document.getElementById("live-game");
+const liveViewers = document.getElementById("live-viewers");
 const goalSection = document.getElementById("meta");
 const goalCurrent = document.getElementById("goal-current");
 const goalTarget = document.getElementById("goal-target");
@@ -93,6 +97,17 @@ if (goalSection && badgeValue) {
   const clearLiveMeta = () => {
     liveTitle.textContent = "";
     liveGame.textContent = "";
+    liveViewers.textContent = "";
+    // A duracao e o segundo texto do badge e o chip so se esconde quando esta vazio:
+    // sem limpar, o offline mostraria o ultimo uptime ao lado de OFFLINE.
+    badgeValue.textContent = "";
+    document.documentElement.style.removeProperty("--ag-live-shot");
+  };
+
+  // A arte de fundo so existe enquanto ha stream: offline, o preview da Twitch redireciona
+  // para o placeholder deles, entao nao montamos o url em nenhum outro estado.
+  const showLiveShot = () => {
+    document.documentElement.style.setProperty("--ag-live-shot", `url("${LIVE_SHOT_URL}")`);
   };
 
   // O titulo do stream e texto remoto: nunca vira HTML.
@@ -134,27 +149,32 @@ if (goalSection && badgeValue) {
         if (isUnknown) {
           setState("unknown");
           clearLiveMeta();
-          writeCache({ state: "unknown" });
+          writeCache({ state: "unknown", viewers: null });
           return;
         }
 
         if (isOffline) {
           setState("offline");
           clearLiveMeta();
-          writeCache({ state: "offline", duration: "", title: "", game: "" });
+          writeCache({ state: "offline", duration: "", title: "", game: "", viewers: null });
           return;
         }
 
         setState("live");
         const duration = toShortDuration(uptime);
         badgeValue.textContent = duration;
-        const [title, game] = await Promise.all([
+        showLiveShot();
+        const [title, game, viewersRaw] = await Promise.all([
           fetchText(`title/${LIVE_CHANNEL}`).catch(() => ""),
           fetchText(`game/${LIVE_CHANNEL}`).catch(() => ""),
+          fetchText(`viewercount/${LIVE_CHANNEL}`).catch(() => ""),
         ]);
+        // viewercount so devolve numero durante a live; fora dela vem prosa, e prosa nao se pinta.
+        const viewers = /^\d+$/.test(viewersRaw) && Number(viewersRaw) <= 500000 ? Number(viewersRaw) : null;
         if (title) setText(liveTitle, title);
         if (game) setText(liveGame, game);
-        writeCache({ state: "live", duration, title, game });
+        if (viewers !== null) liveViewers.textContent = String(viewers);
+        writeCache({ state: "live", duration, title, game, viewers });
       } catch (error) {
         failures += 1;
         if (failures >= MAX_FAILURES) setState("unknown");
@@ -188,6 +208,8 @@ if (goalSection && badgeValue) {
       if (cache.duration) badgeValue.textContent = cache.duration;
       if (cache.title) setText(liveTitle, cache.title);
       if (cache.game) setText(liveGame, cache.game);
+      if (cache.viewers !== null && cache.viewers !== undefined) liveViewers.textContent = String(cache.viewers);
+      showLiveShot();
     } else {
       clearLiveMeta();
     }
