@@ -83,6 +83,10 @@ img { max-width: 100%; }
 .main-nav .language-toggle { min-width: 39px; padding: 6px 8px; border: 1px solid #57d7f588; border-radius: 3px; background: #57d7f510; color: var(--cyan); cursor: pointer; font: 500 .7rem var(--mono); transition: background .2s ease, color .2s ease; }
 .main-nav .language-toggle:hover { background: var(--cyan); color: #10212a; }
 .main-nav .language-toggle:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+/* Os quatro idiomas ficam num grupo so: o nav da 32px entre itens, mas as opcoes
+   entre si precisam de um vao proprio, senao o grupo inteiro parece um so botao. */
+.language-switch { display: inline-flex; gap: 5px; }
+.main-nav .language-toggle[aria-pressed="true"] { border-color: var(--cyan); background: var(--cyan); color: #10212a; }
 .hero { position: relative; overflow: hidden; min-height: 645px; padding: 146px 0 0; background: var(--band-bg); color: var(--band-fg); }
 .hero::after { position: absolute; inset: 0; background: radial-gradient(ellipse at 72% 43%, #38c9ef20, transparent 40%); content: ""; pointer-events: none; }
 .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(#ffffff08 1px, transparent 1px), linear-gradient(90deg, #ffffff08 1px, transparent 1px); background-size: 56px 56px; mask-image: linear-gradient(90deg, transparent, #000 55%, #000); opacity: .5; }
@@ -198,6 +202,13 @@ h2 { margin: 10px 0 0; font-size: clamp(2.1rem, 4vw, 3.25rem); font-weight: 600;
 .feedback-invite { margin: 26px 0 0; color: #9b9c93; font-size: .82rem; }
 .feedback-invite a { color: var(--cyan); font-weight: 600; text-underline-offset: 4px; }
 
+@media (max-width: 900px) {
+  /* Medido aos 860px: com os quatro idiomas a linha nao cabe e o flex espreme
+     "Onde me achar" ate quebrar em tres linhas. Folga menor e linha inteira que desce. */
+  .main-nav { gap: 22px; flex-wrap: wrap; row-gap: 8px; }
+  .main-nav a { white-space: nowrap; }
+}
+
 @media (max-width: 800px) {
   .hero { min-height: auto; padding-top: 125px; }
   .hero-inner { grid-template-columns: 1fr .8fr; gap: 15px; }
@@ -208,6 +219,10 @@ h2 { margin: 10px 0 0; font-size: clamp(2.1rem, 4vw, 3.25rem); font-weight: 600;
   .about-layout { gap: 45px; }
   .project-image { height: 205px; }
   .project-content { padding: 17px; }
+  /* Entre 621 e 800px os quatro idiomas nao cabem numa linha: sem isto o flex aperta
+     os links e quebra o texto dentro do rotulo. Descer a linha inteira e mais limpo. */
+  .main-nav { flex-wrap: wrap; row-gap: 8px; }
+  .main-nav a { white-space: nowrap; }
 }
 
 @media (max-width: 620px) {
@@ -218,7 +233,8 @@ h2 { margin: 10px 0 0; font-size: clamp(2.1rem, 4vw, 3.25rem); font-weight: 600;
   .brand-mark { width: 30px; height: 30px; }
   .main-nav { width: 100%; justify-content: space-between; gap: 6px; font-size: .7rem; }
   .main-nav .nav-contact { padding: 5px 8px; }
-  .main-nav .language-toggle { min-width: 34px; padding-inline: 5px; }
+  .main-nav .language-toggle { min-width: 28px; padding: 6px 4px; }
+  .language-switch { gap: 3px; }
   .hero { padding-top: 115px; }
   .hero-inner { grid-template-columns: 1fr; gap: 0; }
   .hero h1 { font-size: clamp(3.35rem, 13vw, 5rem); }

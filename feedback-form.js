@@ -39,8 +39,53 @@ const messages = {
     failed: 'The feedback could not be sent. Check your connection and try again.',
     serverFailed: 'The service did not accept the submission (HTTP {status}). Please try again later.',
     timeout: 'The upload took too long. Please try again with smaller files.'
+  },
+  es: {
+    ready: 'Completa los campos y envíalo cuando estés listo.',
+    endpointMissing: 'El envío no está disponible por ahora. Inténtalo de nuevo más tarde.',
+    imagesTooMany: 'Selecciona como máximo 5 imágenes.',
+    invalidImage: 'Selecciona solo archivos de imagen.',
+    imageTooLarge: 'Una de las imágenes supera el límite de 40 MB.',
+    invalidVideo: 'Selecciona un archivo de vídeo.',
+    videoTooLarge: 'El vídeo debe pesar como máximo 20 MB.',
+    preparing: 'Preparando los archivos…',
+    sending: 'Enviando tu comentario…',
+    progress: 'Enviando tu comentario… {percent}%',
+    sent: 'Comentario enviado con éxito. ¡Gracias!',
+    failed: 'No se pudo enviar el comentario. Revisa tu conexión e inténtalo de nuevo.',
+    serverFailed: 'El servicio no aceptó el envío (HTTP {status}). Inténtalo de nuevo más tarde.',
+    timeout: 'El envío tardó demasiado. Inténtalo de nuevo con archivos más pequeños.'
+  },
+  fr: {
+    ready: 'Remplissez les champs puis envoyez quand vous êtes prêt.',
+    endpointMissing: 'L’envoi est temporairement indisponible. Réessayez plus tard.',
+    imagesTooMany: 'Sélectionnez 5 images maximum.',
+    invalidImage: 'Sélectionnez uniquement des fichiers image.',
+    imageTooLarge: 'L’une des images dépasse la limite de 40 Mo.',
+    invalidVideo: 'Sélectionnez un fichier vidéo.',
+    videoTooLarge: 'La vidéo doit peser 20 Mo maximum.',
+    preparing: 'Préparation des fichiers…',
+    sending: 'Envoi de votre commentaire…',
+    progress: 'Envoi de votre commentaire… {percent}%',
+    sent: 'Commentaire envoyé avec succès. Merci !',
+    failed: 'Impossible d’envoyer le commentaire. Vérifiez votre connexion et réessayez.',
+    serverFailed: 'Le service a refusé l’envoi (HTTP {status}). Réessayez plus tard.',
+    timeout: 'L’envoi a pris trop de temps. Réessayez avec des fichiers plus légers.'
   }
 };
+
+/* O idioma gravado no envio tem de ser o que a pagina mostra. Uma lingua fora da
+   lista cai em pt-BR: o desenvolvedor recebe o texto no idioma que sabe ler. */
+const FORM_LANGUAGES = {
+  "pt-BR": 'Português (Brasil)',
+  en: 'English',
+  es: 'Español',
+  fr: 'Français'
+};
+
+function resolveFormLanguage(tag) {
+  return Object.prototype.hasOwnProperty.call(FORM_LANGUAGES, tag) ? tag : 'pt-BR';
+}
 
 const form = document.getElementById('feedback-form');
 const statusMessage = document.getElementById('feedback-status');
@@ -51,7 +96,7 @@ const videoInput = document.getElementById('feedback-video');
 const languageInput = document.getElementById('feedback-language');
 const categoryInput = document.getElementById('feedback-category');
 const categoryValue = document.getElementById('feedback-category-value');
-let language = document.documentElement.lang === 'en' ? 'en' : 'pt-BR';
+let language = resolveFormLanguage(document.documentElement.lang);
 let statusKey = 'ready';
 let statusState = 'info';
 let statusParams = {};
@@ -87,8 +132,8 @@ function setStatus(key, state = 'info', params = {}) {
 
 function syncLanguage(event) {
   const nextLanguage = event && event.detail ? event.detail.language : document.documentElement.lang;
-  language = nextLanguage === 'en' ? 'en' : 'pt-BR';
-  if (languageInput) languageInput.value = language === 'en' ? 'English' : 'Português (Brasil)';
+  language = resolveFormLanguage(nextLanguage);
+  if (languageInput) languageInput.value = FORM_LANGUAGES[language];
   renderStatus();
 }
 
@@ -239,7 +284,7 @@ form.addEventListener('submit', async (event) => {
     payload.append('title', form.elements.title.value.trim());
     payload.append('description', form.elements.description.value.trim());
     payload.append('Categoria', form.elements.category.value);
-    payload.append('language', language === 'en' ? 'English' : 'Português (Brasil)');
+    payload.append('language', FORM_LANGUAGES[language]);
     payload.append('page', `${window.location.origin}${window.location.pathname}`);
     [...preparedImages, videoFile].filter(Boolean).forEach((file, index) => {
       payload.append(`attachment_${index + 1}`, file, file.name);
@@ -249,7 +294,7 @@ form.addEventListener('submit', async (event) => {
     await sendFeedback(payload);
     form.reset();
     applyCategory();
-    if (languageInput) languageInput.value = language === 'en' ? 'English' : 'Português (Brasil)';
+    if (languageInput) languageInput.value = FORM_LANGUAGES[language];
     progressBar.hidden = true;
     setStatus('sent', 'success');
   } catch (error) {

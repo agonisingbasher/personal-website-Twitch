@@ -121,12 +121,19 @@ nativo para lugar nenhum:
 
 ## Idioma
 
-pt-BR e EN, com o motor i18n do portfólio (`script.js`). Duas coisas a respeitar ao editar:
+Quatro idiomas com dicionário escrito à mão — pt-BR, EN, ES e FR — no motor i18n do portfólio
+(`script.js`). O seletor são quatro botões `.language-toggle` dentro de `.language-switch`: nada de
+botão que cicla idioma, nada de link para o Google Translate. Duas coisas a respeitar ao editar:
 
-- PT e EN são escritos **na mesma ordem de chaves**. Uma asserção no console avisa quando
-  paridade quebrar (`[i18n] parity break`), e `resolveKey()` cai no PT antes de imprimir
+- As quatro listas são escritas **na mesma ordem de chaves**. Uma asserção no console avisa quando
+  paridade quebrar (`[i18n] paridade quebrada`), e `resolveKey()` cai no PT antes de imprimir
   `undefined` — é assim que se corrige sem reintroduzir o bug antigo.
 - Toda string visível vem do dicionário. O JS não injeta rótulo nenhum.
+
+A ordem de decisão é `?lang=` > `localStorage` > `navigator.languages` (com `navigator.language` de
+reserva) > pt-BR. Qualquer `pt-*` colapsa em `pt-BR`, única variante portuguesa traduzida aqui; um
+visitante com o navegador em espanhol ou francês já abre no idioma dele, e a escolha manual dele
+passa a vencer na visita seguinte.
 
 A chave de idioma é `agonisingbasher-twitch-language` e a de cache é `agonisingbasher-twitch-live`.
 Os dois sites moram na **mesma origem** `agonisingbasher.github.io`, então nome próprio não é
