@@ -128,6 +128,29 @@ if (goalSection && badgeValue) {
     }
   };
 
+  // Fonte principal: snapshot publicado pela API oficial Twitch Helix via GitHub Actions.
+  // Mais de 15 minutos sem atualizacao nao e prova de que o canal esta offline.
+  const fetchOfficialSnapshot = async () => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+    try {
+      const response = await fetch(`twitch-live.json?t=${Math.floor(Date.now() / 60000)}`, {
+        signal: controller.signal,
+        cache: "no-store",
+      });
+      if (!response.ok) return null;
+      const data = await response.json();
+      if (data.channel !== LIVE_CHANNEL || typeof data.live !== "boolean") return null;
+      const checkedAt = Date.parse(data.checked_at);
+      if (!Number.isFinite(checkedAt) || Date.now() - checkedAt > 15 * 60 * 1000 || checkedAt > Date.now() + 60000) return null;
+      return data;
+    } catch (error) {
+      return null; // A configuracao da API oficial pode ainda nao ter sido ativada.
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
   const runCycle = async (force) => {
     const now = Date.now();
     const cache = readCache();
@@ -139,9 +162,37 @@ if (goalSection && badgeValue) {
 
     inFlight = (async () => {
       try {
+        const official = await fetchOfficialSnapshot();
+        if (official) {
+          lastSuccess = Date.now();
+          lastUptimeAt = lastSuccess;
+          failures = 0;
+          if (!official.live) {
+            setState("offline");
+            clearLiveMeta();
+            writeCache({ state: "offline", duration: "", title: "", game: "", viewers: null });
+            return;
+          }
+          setState("live");
+          const started = Date.parse(official.started_at);
+          const duration = Number.isFinite(started) && started <= Date.now()
+            ? toShortDuration(`${Math.floor((Date.now() - started) / 86400000)} days ${Math.floor(((Date.now() - started) % 86400000) / 3600000)} hours ${Math.floor(((Date.now() - started) % 3600000) / 60000)} minutes`)
+            : "";
+          clearLiveMeta();
+          badgeValue.textContent = duration;
+          showLiveShot();
+          if (typeof official.title === "string") setText(liveTitle, official.title);
+          if (typeof official.game === "string") setText(liveGame, official.game);
+          const viewers = Number.isSafeInteger(official.viewers) && official.viewers >= 0 ? official.viewers : null;
+          if (viewers !== null) liveViewers.textContent = String(viewers);
+          writeCache({ state: "live", duration, title: liveTitle.textContent, game: liveGame.textContent, viewers });
+          return;
+        }
+
+        // Fallback anterior enquanto a API oficial ainda nao estiver configurada.
         const uptime = await fetchText(`uptime/${LIVE_CHANNEL}`);
         const isOffline = /\bis\s+offline\b/i.test(uptime);
-        const isUnknown = !uptime || /^user not found/i.test(uptime);
+        const isUnknown = !uptime || !isOffline && !/\\b(?:days?|hours?|minutes?|seconds?)\\b/i.test(uptime);
         lastSuccess = Date.now();
         lastUptimeAt = lastSuccess;
         failures = 0;
