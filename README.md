@@ -209,3 +209,33 @@ curl -I https://agonisingbasher.github.io/personal-website-twitch/
 
 Em `Settings → Pages → Deploy from a branch`, escolha `main` / root — um repo vazio não ativa
 sozinho.
+
+## Integração oficial da Twitch (Helix)
+
+O site agora prioriza `twitch-live.json`, atualizado pelo workflow
+`.github/workflows/twitch-live.yml` com a API oficial **Get Streams**.
+O arquivo público só contém status, título, jogo, espectadores e horário de
+atualização: **nunca contém tokens ou secrets**. Se o snapshot não existir ou
+tiver mais de 15 minutos, a página tenta o fallback antigo da DecAPI.
+Se este também falhar ou retornar conteúdo não reconhecido, a página informa
+`Status indisponível` em vez de afirmar que o canal está online.
+
+**Ativação obrigatória (uma vez):**
+
+1. Em https://dev.twitch.tv/console/apps registre um aplicativo da Twitch e
+   obtenha o **Client ID** e **Client Secret** (não publique o Secret).
+2. No repositório GitHub: **Settings → Secrets and variables → Actions →
+   New repository secret**. Crie os secrets `TWITCH_CLIENT_ID` e
+   `TWITCH_CLIENT_SECRET`.
+3. Em **Actions → Atualizar status da Twitch → Run workflow**, execute o
+   workflow manualmente pela primeira vez.
+4. Verifique se o arquivo `twitch-live.json` foi criado na branch `main`
+   e se `checked_at` muda nas execuções seguintes.
+
+O cron solicita uma execução a cada 5 minutos, mas o GitHub Actions pode
+atrasar as tarefas agendadas. Por isso o frontend descarta snapshots com mais
+de 15 minutos. Confira também se a configuração da branch permite ao
+`GITHUB_TOKEN` gravar conteúdo; o workflow pede `contents: write`.
+Nenhuma credencial deve entrar nos arquivos do GitHub Pages.
+
+A contagem de seguidores continua usando o endpoint anterior da DecAPI.
