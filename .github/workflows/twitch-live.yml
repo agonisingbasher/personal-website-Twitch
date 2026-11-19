@@ -4,21 +4,28 @@ on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "twitch-live.json"
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: twitch-live-snapshot
   cancel-in-progress: false
 
 jobs:
-  refresh:
+  refresh-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -27,7 +34,7 @@ jobs:
           TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
           TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
         run: python scripts/update_twitch_live.py
-      - name: Publicar snapshot se mudou
+      - name: Salvar snapshot no repositorio
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -36,3 +43,14 @@ jobs:
             git commit -m "chore: refresh Twitch live snapshot"
             git push
           fi
+      # GITHUB_TOKEN nao dispara nova build de Pages quando faz push.
+      # Publicar explicitamente garante que o JSON atualizado chega ao site.
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Preparar arquivos para GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Publicar GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
