@@ -32,6 +32,35 @@
 }
 
 /* ---- badge de status ---- */
+.ag-live-stage {
+  position: relative;
+  align-self: center;
+  width: min(100%, 620px);
+  justify-self: end;
+  padding: 13px;
+  border: 1px solid color-mix(in srgb, var(--band-accent) 44%, transparent);
+  border-radius: 8px;
+  background: linear-gradient(145deg, #162836f2, #0d1723f5);
+  box-shadow: 0 24px 64px #0008, inset 0 1px #ffffff10;
+}
+.ag-live-stage::before {
+  position: absolute;
+  top: 13px;
+  bottom: 13px;
+  left: -1px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--band-accent);
+  content: "";
+}
+.ag-live-stage-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 3px 4px 12px 10px; }
+.ag-live-stage-label { color: var(--band-muted); font: 500 .65rem var(--mono); letter-spacing: .1em; }
+.ag-live-player { position: relative; overflow: hidden; aspect-ratio: 16 / 9; border: 1px solid #ffffff22; border-radius: 4px; background: #080d13; }
+.ag-live-player::after { position: absolute; inset: 0; border: 1px solid #ffffff0d; border-radius: inherit; content: ""; pointer-events: none; }
+.ag-live-player iframe { display: block; width: 100%; height: 100%; border: 0; }
+.ag-live-stage .ag-live-meta { min-height: 64px; margin: 15px 8px 4px; }
+.ag-live-open { display: inline-flex; margin: 8px; color: var(--band-accent); font: 600 .7rem var(--mono); letter-spacing: .06em; text-decoration: none; }
+.ag-live-open:hover { color: #ffffff; }
 .ag-live-badge {
   display: inline-flex;
   align-items: center;
@@ -64,10 +93,10 @@ html[data-live-state="unknown"] .ag-live-state.is-unknown { display: inline-flex
    mede 3,25:1 e reprova AA. No ar o rotulo vira pildora vermelha solida com texto
    claro: 5,43:1 medidos no pior pixel da moldura mais clara que testamos. */
 .ag-live-state.is-live {
-  color: #fff1f2;
-  background: color-mix(in srgb, var(--ag-live-red) 82%, #240309);
+  color: #e9fbff;
+  background: #104655;
 }
-.ag-live-state.is-live::before { background: #fff1f2; }
+.ag-live-state.is-live::before { background: var(--band-accent); box-shadow: 0 0 10px var(--band-accent); }
 .ag-live-state.is-offline::before { background: var(--band-muted); }
 .ag-live-state.is-unknown::before { background: #b98a3c; }
 
@@ -75,8 +104,8 @@ html[data-live-state="unknown"] .ag-live-state.is-unknown { display: inline-flex
    dois textos cruzando no mesmo box geraria frame com os dois legiveis. */
 .ag-live-badge { transition: border-color .45s ease, background-color .45s ease; }
 html[data-live-state="live"] .ag-live-badge {
-  border-color: color-mix(in srgb, var(--ag-live-red) 52%, transparent);
-  background: color-mix(in srgb, var(--ag-live-red) 13%, transparent);
+  border-color: color-mix(in srgb, var(--band-accent) 48%, transparent);
+  background: color-mix(in srgb, var(--band-accent) 10%, transparent);
 }
 
 .ag-live-value { color: var(--band-accent); }
@@ -88,8 +117,8 @@ html[data-live-state="live"] .ag-live-badge {
 @media (prefers-reduced-motion: no-preference) {
   .ag-live-state.is-live { animation: ag-live-halo 2.4s ease-in-out infinite; }
   @keyframes ag-live-halo {
-    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ag-live-red) 30%, transparent); }
-    50% { box-shadow: 0 0 16px 2px color-mix(in srgb, var(--ag-live-red) 60%, transparent); }
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--band-accent) 22%, transparent); }
+    50% { box-shadow: 0 0 16px 2px color-mix(in srgb, var(--band-accent) 54%, transparent); }
   }
 }
 
@@ -200,9 +229,9 @@ html[data-live-state="live"] .ag-live-backdrop { opacity: 1; }
 .ag-link-note { margin-left: 7px; color: var(--band-muted); font-size: .68rem; }
 .band--navy .social-links a:hover .ag-link-handle { color: var(--band-accent); }
 
-/* ---- botao Seguir: unico lugar onde o roxo da Twitch aparece ---- */
-.button--follow { background: var(--ag-purple); color: #efeff1; }
-.button--follow:hover { background: var(--ag-purple-soft); color: #17102a; }
+/* ---- a acao acompanha o ciano do site; o player preserva a identidade Twitch ---- */
+.button--follow { background: var(--band-accent); color: #10212a; }
+.button--follow:hover { background: #a6effb; color: #10212a; }
 .button--ghost { border-color: var(--band-hairline); color: var(--band-fg); }
 .button--ghost:hover { border-color: var(--band-accent); color: var(--band-accent); }
 
@@ -303,6 +332,7 @@ html[data-live-state="live"] .ag-live-meta { visibility: visible; opacity: 1; }
   .main-nav a { white-space: nowrap; }
   .ag-avatar { width: 190px; height: 190px; }
   .ag-avatar img { width: 138px; height: 138px; }
+  .ag-live-stage { justify-self: stretch; }
   .ag-live-meta-row { flex-direction: column; gap: 2px; }
   /* A 1920/480 natural ficaria com ~130px de altura no celular e a arte nao se le.
      Relacao mais alta recorta as laterais e mantem o banner legivel. */

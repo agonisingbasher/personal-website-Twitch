@@ -53,12 +53,21 @@
             </a>
             <a class="button button--ghost" href="#portfolio" data-i18n="heroProjects">Ver os projetos</a>
           </div>
-          <p class="ag-live-badge" id="live-badge">
-            <span class="ag-live-state is-live" data-i18n="liveStateLive">AO VIVO</span>
-            <span class="ag-live-state is-offline" data-i18n="liveStateOffline">OFFLINE</span>
-            <span class="ag-live-state is-unknown" data-i18n="liveStateUnknown">Status indisponível</span>
-            <span class="ag-live-value" id="live-value"></span>
-          </p>
+          <p class="ag-since" data-i18n="heroChannelSince">No ar desde março de 2020</p>
+        </div>
+        <aside class="ag-live-stage" aria-label="Player da Twitch do canal AgonisingBasher" data-i18n-aria-label="livePlayerAria">
+          <div class="ag-live-stage-head">
+            <span class="ag-live-stage-label" data-i18n="livePlayerLabel">TRANSMISSÃO DO CANAL</span>
+            <p class="ag-live-badge" id="live-badge">
+              <span class="ag-live-state is-live" data-i18n="liveStateLive">AO VIVO</span>
+              <span class="ag-live-state is-offline" data-i18n="liveStateOffline">OFFLINE</span>
+              <span class="ag-live-state is-unknown" data-i18n="liveStateUnknown">Status indisponível</span>
+              <span class="ag-live-value" id="live-value"></span>
+            </p>
+          </div>
+          <div class="ag-live-player">
+            <iframe src="https://player.twitch.tv/?channel=agonisingbasher&amp;parent=agonisingbasher.github.io&amp;autoplay=false" title="Player da Twitch de AgonisingBasher" data-i18n-title="livePlayerTitle" allowfullscreen="true" scrolling="no" allow="fullscreen"></iframe>
+          </div>
           <dl class="ag-live-meta">
             <div class="ag-live-meta-row">
               <dt data-i18n="liveNowTitle">Título da live</dt>
@@ -73,15 +82,8 @@
               <dd id="live-viewers"></dd>
             </div>
           </dl>
-          <p class="ag-since" data-i18n="heroChannelSince">No ar desde março de 2020</p>
-        </div>
-        <div class="hero-art">
-          <div class="ag-avatar">
-            <span class="ag-avatar-ring" aria-hidden="true"></span>
-            <span class="ag-avatar-ring is-inner" aria-hidden="true"></span>
-            <img src="assets/avatar-300x300.png" width="300" height="300" alt="Ícone do canal AgonisingBasher" data-i18n-alt="heroAvatarAlt">
-          </div>
-        </div>
+          <a class="ag-live-open" href="https://www.twitch.tv/agonisingbasher" target="_blank" rel="noreferrer"><span data-i18n="liveOpen">Abrir na Twitch</span></a>
+        </aside>
       </div>
       <div class="container hero-bottom">
         <span data-i18n="heroFooter">UM CANTO DO CANAL FEITO POR MIM</span>
