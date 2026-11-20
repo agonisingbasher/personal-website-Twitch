@@ -192,7 +192,7 @@ if (goalSection && badgeValue) {
         // Fallback anterior enquanto a API oficial ainda nao estiver configurada.
         const uptime = await fetchText(`uptime/${LIVE_CHANNEL}`);
         const isOffline = /\bis\s+offline\b/i.test(uptime);
-        const isUnknown = !uptime || !isOffline && !/\\b(?:days?|hours?|minutes?|seconds?)\\b/i.test(uptime);
+        const isUnknown = !uptime || !isOffline && !/\b(?:days?|hours?|minutes?|seconds?)\b/i.test(uptime);
         lastSuccess = Date.now();
         lastUptimeAt = lastSuccess;
         failures = 0;
