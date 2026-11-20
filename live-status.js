@@ -10,7 +10,7 @@ const UPTIME_EVERY = 5 * 60 * 1000;
 const COUNT_EVERY = 30 * 60 * 1000;
 const MIN_GAP = 60 * 1000;
 const REQUEST_TIMEOUT = 8000;
-const MAX_FAILURES = 2;
+const MAX_FAILURES = 3;
 
 const liveStateAttr = document.documentElement;
 const badgeValue = document.getElementById("live-value");
@@ -200,7 +200,9 @@ if (goalSection && badgeValue) {
         if (isUnknown) {
           setState("unknown");
           clearLiveMeta();
-          writeCache({ state: "unknown", viewers: null });
+          // "Indisponivel" e um estado transitorio da rede, nao um dado do canal.
+          // Nao o guardamos: uma pagina recarregada deve consultar de novo em vez de
+          // repetir uma falha antiga enquanto a fonte ja voltou a responder.
           return;
         }
 
@@ -228,7 +230,13 @@ if (goalSection && badgeValue) {
         writeCache({ state: "live", duration, title, game, viewers });
       } catch (error) {
         failures += 1;
-        if (failures >= MAX_FAILURES) setState("unknown");
+        if (failures >= MAX_FAILURES) {
+          setState("unknown");
+        } else {
+          // Uma oscilacao do servico nao deve deixar o usuario preso no estado
+          // indisponivel. Tenta novamente logo, antes do ciclo normal de 5 minutos.
+          window.setTimeout(() => runCycle(true), 5000);
+        }
       } finally {
         inFlight = null;
       }
@@ -282,7 +290,9 @@ if (goalSection && badgeValue) {
   else {
     // Recarregar a pagina nao pode virar request novo: o throttle mora no sessionStorage.
     const cached = readCache();
-    const freshState = cached && cached.state && Date.now() - cached.at < MIN_GAP;
+    // Cache de AO VIVO/OFFLINE evita repeticao desnecessaria. Cache "unknown" nunca
+    // e reaproveitado: ele precisa de uma nova verificacao imediatamente.
+    const freshState = cached && cached.state && cached.state !== "unknown" && Date.now() - cached.at < MIN_GAP;
     if (freshState) {
       applyCache(cached);
       lastSuccess = cached.at;
