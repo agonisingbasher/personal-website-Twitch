@@ -4,12 +4,16 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
+# A single workflow owns the Pages deployment. This prevents competing
+# deployments from the scheduled Twitch refresh and regular pushes.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -22,10 +26,39 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+
+      - name: Setup Python for Twitch refresh
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh Twitch status
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
+          TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
+        run: python scripts/update_twitch_live.py
+
+      - name: Save refreshed Twitch snapshot
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add twitch-live.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: refresh Twitch live snapshot"
+            git push
+          fi
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: .
-      - name: Deploy
+
+      - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v4
