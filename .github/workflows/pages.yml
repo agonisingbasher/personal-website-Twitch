@@ -3,6 +3,8 @@ name: Deploy website to GitHub Pages
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "twitch-live.json"
   workflow_dispatch:
   schedule:
     - cron: "*/5 * * * *"
@@ -12,18 +14,14 @@ permissions:
   pages: write
   id-token: write
 
-# A single workflow owns the Pages deployment. This prevents competing
-# deployments from the scheduled Twitch refresh and regular pushes.
+# Avoid two runs deploying to the same Pages environment concurrently.
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -58,6 +56,18 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # GitHub artifact indexing can lag behind a completed upload.
+      # See actions/deploy-pages issue #451.
+      - name: Allow uploaded artifact to become visible
+        run: sleep 30
 
       - name: Deploy Pages
         id: deployment
